@@ -54,7 +54,7 @@ module "web-alb" {
   subnets = module.web_vpc.public_subnets
 
   # Security Group
-  security_group_ingress_rules = security_group_ingress_rules = [module.web-sg.security_group_id]
+  security_group_ingress_rules = [module.web-sg.security_group_id]
 
 
 
