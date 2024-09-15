@@ -40,7 +40,7 @@ module "web-sg" {
   ingress_cidr_blocks = ["0.0.0.0/0"]
 
   egress_rules       = ["all-all"]
-  ingress_cidr_blocks = ["0.0.0.0/0"]
+  egress_cidr_blocks = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group" "web"{
