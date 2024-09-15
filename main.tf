@@ -66,7 +66,7 @@ module "web-alb" {
     }
   }
 
-  http_tcp_listeners = [
+  http_listeners = [
     {
       port               = 80
       protocol           = "HTTP"
