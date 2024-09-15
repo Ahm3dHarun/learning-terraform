@@ -54,7 +54,30 @@ module "web-alb" {
   subnets = module.web_vpc.public_subnets
 
   # Security Group
-  security_group_ingress_rules = [module.web-sg .security_group_id]
+  security_group_ingress_rules = security_group_ingress_rules = [module.web-sg.security_group_id]
+
+
+
+  listeners = {
+    ex-http-https-redirect = {
+      port     = 80
+      protocol = "HTTP"
+      redirect = {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
+    }
+    ex-https = {
+      port            = 443
+      protocol        = "HTTPS"
+      certificate_arn = "arn:aws:iam::123456789012:server-certificate/test_cert-123456789012"
+
+      forward = {
+        target_group_key = "ex-instance"
+      }
+    }
+  }
 
   target_groups = {
     ex-instance = {
@@ -62,24 +85,13 @@ module "web-alb" {
       protocol         = "HTTP"
       port             = 80
       target_type      = "instance"
-      target_id        = aws_instance.web.id
+      target_id        = "i-0f6d38a07d50d080f"
     }
-  }
-
-  listeners = {
-    http_tcp_listeners = {
-      port               = 80
-      protocol           = "HTTP"
-      target_group_index = 0 
-    }
-      default_action = {
-        type             = "forward"
-        target_group_arn = aws_lb_target_group.ex-instance.arn
-      }
   }
 
   tags = {
-    Environment = "Dev"
+    Environment = "Development"
+    Project     = "Example"
   }
 }
 
