@@ -22,11 +22,25 @@ resource "aws_instance" "web" {
   ami           = data.aws_ami.app_ami.id
   instance_type = var.instance_type
 
-  vpc_security_group_ids = [aws_security_group.web.id]
+  vpc_security_group_ids = [module.web-sg.security_group_id]
 
   tags = {
     Name = "HelloWorld"
   }
+}
+
+module "web-sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.2.0"
+  name    = "web_new"
+
+  vpc_id = data.aws_vpc.default.id
+
+  ingress_rules       = ["http-80-tcp", "https-443-tcp"]
+  ingress_cidr_blocks = ["0.0.0.0/0"]
+
+  egress_rules       = ["all-all"]
+  ingress_cidr_blocks = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group" "web"{
